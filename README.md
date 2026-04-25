@@ -58,3 +58,6 @@ python3 main.py
 **on Windows**:
 ```
 python main.py
+
+## References
+- [LangChain Expression Language] (https://www.langchain.com/blog/langchain-expression-language)

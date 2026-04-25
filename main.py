@@ -1,19 +1,17 @@
 from dotenv import load_dotenv
 from langchain_openai import OpenAI
 from colorama import Fore
-from langchain_core.prompts import PromptTemplate
+from langchain_core.prompts import ChatPromptTemplate
 
 load_dotenv()
-
-prompt_template = PromptTemplate.from_template("Tell me a fact about {topic}?")
+# to build a chain using LangChain Expression Language (LCEL), `ChatPromptTemplate` helps
+chain_prompt_template = ChatPromptTemplate.from_template("Tell me a fact about {topic}?")
 llm = OpenAI()
 
 def generate(text):
     """ generate text based on user input """
-    prompt = prompt_template.format(topic=text)
-    print(prompt)
-    return llm.invoke(text)
-
+    chain = chain_prompt_template | llm
+    return chain.invoke(text)
 
 def start():
     instructions = (
