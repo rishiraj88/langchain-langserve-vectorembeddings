@@ -69,7 +69,7 @@ def load_embeddings(documents, user_query):
 def generate_response(retriever, query):
     """Generate a response to user query."""
     chain = (
-        {"context": retriever, "question": "what is the return policy?"}
+        {"context": retriever, "question": RunnablePassthrough()}
         | chat_prompt_template 
         | model 
         | StrOutputParser()
