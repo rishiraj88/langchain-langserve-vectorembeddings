@@ -7,11 +7,13 @@ load_dotenv()
 # to build a chain using LangChain Expression Language (LCEL), `ChatPromptTemplate` helps
 chain_prompt_template = ChatPromptTemplate.from_template("Tell me a fact about {topic}?")
 llm = OpenAI()
+string_output_parser = StrOutputParser()
+
 
 def generate(text):
     """ generate text based on user input """
-    chain = chain_prompt_template | llm
-    return chain.invoke(text)
+    chain = chain_prompt_template | llm | string_output_parser
+    return chain.invoke({"Theme is": text})
 
 def start():
     instructions = (
