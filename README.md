@@ -6,3 +6,5 @@ Here are featured multiple apps, powered with various libraries and projects und
 - [LangChain Expression Language] (https://www.langchain.com/blog/langchain-expression-language)
 - [output_parsers | langchain_core | LangChain Reference] (https://reference.langchain.com/python/langchain-core/output_parsers)
 - [Faiss for similarity search] (https://ai.meta.com/tools/faiss/)
+- [Retriever integrations - Docs by LangChain](https://docs.langchain.com/oss/python/integrations/retrievers)
+[Build a RAG agent with LangChain - Docs by LangChain](https://docs.langchain.com/oss/python/langchain/rag)
