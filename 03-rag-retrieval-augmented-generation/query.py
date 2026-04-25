@@ -19,6 +19,8 @@ import warnings
 warnings.filterwarnings("ignore")
 
 load_dotenv()
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
 
 template: str = """/
     You are a customer support specialist /
@@ -37,14 +39,17 @@ def load_split_documents():
     raw_text = TextLoader("./docs/faq.txt").load()
     text_splitter = CharacterTextSplitter(chunk_size=30, chunk_overlap=0, separator=".")
     chunks = text_splitter.split_documents(raw_text)
-    print(f"number of chunks {len(chunks)}")
-    print(chunks[0])
+    # print(f"number of chunks {len(chunks)}")
+    # print(chunks[0])
     return chunks
 
 # convert to embeddings
 def load_embeddings(documents, user_query):
     """Create a vector store from a collection of documents."""
-    pass
+    embeddings = OpenAIEmbeddings()
+    db = Chroma.from_documents(documents, embeddings)
+    docs = db.similarity_search(user_query)
+    print(docs)
 
 
 def generate_response(retriever, query):
@@ -54,4 +59,7 @@ def generate_response(retriever, query):
 
 def query(query):
     """Query the model with user query."""
-    pass
+    """Query the model with a user query."""
+    documents = load_split_documents()
+    load_embeddings(documents, query)
+    query("what is return policy?")
