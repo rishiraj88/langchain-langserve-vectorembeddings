@@ -21,7 +21,6 @@ warnings.filterwarnings("ignore")
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-
 template: str = """/
     You are a customer support specialist /
     question: {question}. 
@@ -29,9 +28,21 @@ template: str = """/
     and  technical issues. /
     """
 
+def get_embedding(text_to_embed):
+    """ to view the embeddings so created with OpenAI API"""
+    response = client.embeddings.create(
+        model= "text-embedding-ada-002",
+        input=[text_to_embed]
+    )
+    print(response.data[0].embedding)
+
+
 # define prompt
+system_message_prompt_template = SystemMessagePromptTemplate.from_template(template)
+chat_prompt_template = ChatPromptTemplate.from_messages([system_message_prompt_template, HumanMessagePromptTemplate.from_template("{user_query}")])
 
 # init model
+model = ChatOpenAI()
 
 # indexing
 def load_split_documents():
@@ -39,8 +50,6 @@ def load_split_documents():
     raw_text = TextLoader("./docs/faq.txt").load()
     text_splitter = CharacterTextSplitter(chunk_size=30, chunk_overlap=0, separator=".")
     chunks = text_splitter.split_documents(raw_text)
-    # print(f"number of chunks {len(chunks)}")
-    # print(chunks[0])
     return chunks
 
 # convert to embeddings
@@ -50,16 +59,20 @@ def load_embeddings(documents, user_query):
     db = Chroma.from_documents(documents, embeddings)
     docs = db.similarity_search(user_query)
     print(docs)
+    get_embedding(user_query)
+    _ = [get_embedding(doc.page_content) for doc in docs]
 
 
 def generate_response(retriever, query):
     """Generate a response to user query."""
-    pass
+    chain = chat_prompt_template | model | StrOutputParser()
+    return chain.invoke({"user_query": query })
 
 
 def query(query):
     """Query the model with user query."""
-    """Query the model with a user query."""
     documents = load_split_documents()
     load_embeddings(documents, query)
-    query("what is return policy?")
+    return generate_response(query)
+
+query("what is the return policy?")
