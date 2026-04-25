@@ -1,12 +1,19 @@
 from dotenv import load_dotenv
 from langchain_openai import OpenAI
 from colorama import Fore
+from langchain_core.prompts import PromptTemplate
 
 load_dotenv()
 
+prompt_template = PromptTemplate.from_template("Tell me a fact about {topic}?")
+llm = OpenAI()
+
 def generate(text):
     """ generate text based on user input """
-    pass
+    prompt = prompt_template.format(topic=text)
+    print(prompt)
+    return llm.invoke(text)
+
 
 def start():
     instructions = (
