@@ -4,7 +4,17 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# create a vectorstore
+template = """Answer the user queries in this context:
+{context}
+
+Query: {query}
+"""
+prompt = ChatPromptTemplate.from_template(template)
+
+# create a vectorstore & embeddings
+vectorstore = FAISS.from_texts(
+    ["Rishi Raj worked at RiBild"], embedding=OpenAIEmbeddings()
+)
 
 # querying the vectorstore
 
